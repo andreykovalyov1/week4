@@ -1,9 +1,50 @@
 const items = buildItems()
-for (x of genPowerSet(items))
-{
-	console.log (x)
-}
+let res = genSolution(weightFilter(20,genPowerSet(items)))
+console.log(res.totalValue)
+console.log(res.taken)
 
+function value(taken)
+{
+	let totalValue = 0
+	for(let item of taken)	totalValue += item.value 
+	return totalValue
+}
+function genSolution(xF)
+{
+	let totalValue = 0
+	let taken = []
+	for (let x of xF)
+	{
+		if (value(x) > totalValue)
+		{
+			totalValue = value(x)
+			taken = x.slice()
+		}
+	}
+	return {"totalValue": totalValue, "taken": taken}
+}
+function* weightFilter(maxWeight, genPowerSet)
+{
+	for(let taken of genPowerSet)
+	{
+		if (weightTest(taken, maxWeight))
+			yield taken
+	}
+	return
+}
+function weightTest(taken, maxWeight)
+{
+	totalWeight = 0
+	for(let t of taken)
+	{
+		totalWeight += t.weight
+		if(totalWeight > maxWeight)
+		{
+			return false
+		}
+	}
+	return true
+}
 
 function* genPowerSet(items)
 {
